@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 
 import {
   useNotification,
-} from "../context/temp";
+} from "../context/NotificationContext";
 
 function GlobalSocketListener() {
   const { user } = useContext(AuthContext);

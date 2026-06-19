@@ -1,6 +1,6 @@
 import {
   useNotification,
-} from "../context/temp";
+} from "../context/NotificationContext";
 
 import {
   motion,

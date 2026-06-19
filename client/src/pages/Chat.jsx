@@ -15,7 +15,7 @@ import { AuthContext } from "../context/AuthContext";
 
 import {
   NotificationContext,
-} from "../context/temp";
+} from "../context/NotificationContext";
 
 import socket from "../socket";
 

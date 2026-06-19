@@ -1,4 +1,4 @@
-import { useNotification } from "../context/temp";
+import { useNotification } from "../context/NotificationContext";
 import { useEffect, useState, useContext } from "react";
 import { motion } from "framer-motion";
 import { AuthContext } from "../context/AuthContext";
