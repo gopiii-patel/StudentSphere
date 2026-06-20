@@ -14,7 +14,7 @@ import GlobalSocketListener from "./components/GlobalSocketListener";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Messages from "./pages/Messages";
+import Messages from "./pages/Messages.jsx";
 import Register from "./pages/Register";
 import Profile from "./pages/profile";
 import Marketplace from "./pages/marketplace";
