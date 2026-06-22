@@ -17,7 +17,7 @@ import Login from "./pages/Login";
 import Messages from "./pages/Messages.jsx";
 import Register from "./pages/Register";
 import Profile from "./pages/profile";
-import Marketplace from "./pages/marketplace";
+import Marketplace from "./pages/Marketplace.jsx";
 import Chat from "./pages/Chat";
 import ProductDetails from "./pages/ProductDetails";
 import Notes from "./pages/Notes";
