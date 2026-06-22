@@ -14,10 +14,8 @@ import GlobalSocketListener from "./components/GlobalSocketListener";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Messages from "./pages/Messages.jsx";
 import Register from "./pages/Register";
 import Profile from "./pages/profile";
-import Marketplace from "./pages/Marketplace.jsx";
 import Chat from "./pages/Chat";
 import ProductDetails from "./pages/ProductDetails";
 import Notes from "./pages/Notes";
@@ -27,6 +25,11 @@ import VerifyOtp from "./pages/VerifyOtp";
 
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+
+import Marketplace from "./pages/Marketplace";
+import Messages from "./pages/Messages";
+
+
 
 function App() {
   useEffect(() => {
@@ -60,7 +63,7 @@ function App() {
           path="/marketplace"
           element={
             <ProtectedRoute>
-              <Marketplace />
+              <Marketplace/>
             </ProtectedRoute>
           }
         />
