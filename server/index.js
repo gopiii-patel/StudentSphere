@@ -23,13 +23,12 @@ const app = express();
 const server = http.createServer(app);
 
 // ======================
-// Allowed Origins
+// CLIENT URL
 // ======================
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
+const CLIENT_URL =
+  process.env.CLIENT_URL ||
+  "http://localhost:5173";
 
 // ======================
 // CORS
@@ -37,16 +36,22 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: CLIENT_URL,
     credentials: true,
   })
 );
 
 app.use(express.json());
 
+// ======================
+// Static Uploads
+// ======================
+
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "uploads"))
+  express.static(
+    path.join(__dirname, "uploads")
+  )
 );
 
 // ======================
@@ -55,7 +60,7 @@ app.use(
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: CLIENT_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -72,9 +77,11 @@ app.set("onlineUsers", onlineUsers);
 // ======================
 
 io.on("connection", (socket) => {
+
   console.log("User connected:", socket.id);
 
   socket.on("user:online", (userData) => {
+
     onlineUsers.set(userData._id, {
       socketId: socket.id,
       user: userData,
@@ -85,75 +92,81 @@ io.on("connection", (socket) => {
     ).map((u) => u.user);
 
     io.emit("users:online", users);
-  });
 
-  // Message Seen
+  });
 
   socket.on(
     "message:seen",
     ({ senderId, conversationId }) => {
+
       const sender =
         onlineUsers.get(senderId);
 
       if (sender) {
+
         io.to(sender.socketId).emit(
           "message:seen",
           {
             conversationId,
           }
         );
+
       }
+
     }
   );
-
-  // Typing Start
 
   socket.on(
     "typing:start",
     ({ receiverId, senderName }) => {
+
       const receiver =
         onlineUsers.get(receiverId);
 
       if (receiver) {
+
         io.to(receiver.socketId).emit(
           "typing:start",
           {
             senderName,
           }
         );
+
       }
+
     }
   );
-
-  // Typing Stop
 
   socket.on(
     "typing:stop",
     ({ receiverId }) => {
+
       const receiver =
         onlineUsers.get(receiverId);
 
       if (receiver) {
+
         io.to(receiver.socketId).emit(
           "typing:stop"
         );
+
       }
+
     }
   );
 
-  // Disconnect
-
   socket.on("disconnect", () => {
-    for (const [
-      userId,
-      value,
-    ] of onlineUsers.entries()) {
-      if (
-        value.socketId === socket.id
-      ) {
+
+    for (const [userId, value] of onlineUsers.entries()) {
+
+      if (value.socketId === socket.id) {
+
         onlineUsers.delete(userId);
+
         break;
+
       }
+
     }
 
     const users = Array.from(
@@ -166,11 +179,13 @@ io.on("connection", (socket) => {
       "User disconnected:",
       socket.id
     );
+
   });
+
 });
 
 // ======================
-// Routes
+// API Routes
 // ======================
 
 app.use("/api/auth", authRoutes);
@@ -194,10 +209,12 @@ app.use("/api/hostel", hostelRoutes);
 // ======================
 
 app.get("/", (req, res) => {
-  res.status(200).json({
+
+  res.json({
     success: true,
     message: "StudentSphere Backend Running 🚀",
   });
+
 });
 
 // ======================
@@ -208,7 +225,9 @@ const PORT =
   process.env.PORT || 5000;
 
 server.listen(PORT, () => {
+
   console.log(
     `🚀 Server running on port ${PORT}`
   );
+
 });
