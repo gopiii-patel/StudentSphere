@@ -11,6 +11,12 @@ import {
   X,
 } from "lucide-react";
 
+import {
+  Bookmark,
+} from "lucide-react";
+
+import postService from "../services/postService";
+
 import { AuthContext } from "../context/AuthContext";
 import api from "../utils/api";
 
@@ -43,6 +49,7 @@ function PostCard({ post, fetchPosts }) {
   const handleLike = async () => {
     try {
       await api.put(`/posts/like/${post._id}`);
+      fetchPosts();
     } catch (error) {
       console.error("Like failed:", error);
     }
@@ -60,7 +67,10 @@ function PostCard({ post, fetchPosts }) {
       await api.put(`/posts/comment/${post._id}`, {
         text: commentText,
       });
+
       setCommentText("");
+
+      fetchPosts();
       
     } catch (error) {
       console.error("Comment failed:", error);
@@ -126,6 +136,17 @@ function PostCard({ post, fetchPosts }) {
 
     return `${diffDays}d ago`;
   };
+// SAVE post
+
+  const savePost = async () => {
+  try {
+    await postService.toggleSave(
+      post._id
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   return (
     <motion.div
@@ -264,6 +285,15 @@ function PostCard({ post, fetchPosts }) {
           <MessageSquare size={14} />
 
           <span>{post.comments?.length || 0}</span>
+        </motion.button>
+
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={savePost}
+          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-800 bg-slate-950/20 text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition"
+        >
+          <Bookmark size={14} />
+          <span>Save</span>
         </motion.button>
       </div>
 

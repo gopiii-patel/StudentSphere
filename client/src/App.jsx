@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Notifications from "./components/Notifications";
-
 import GlobalSocketListener from "./components/GlobalSocketListener";
 
 import Home from "./pages/Home";
@@ -20,16 +19,14 @@ import Chat from "./pages/Chat";
 import ProductDetails from "./pages/ProductDetails";
 import Notes from "./pages/Notes";
 import UploadNote from "./pages/UploadNote";
-
 import VerifyOtp from "./pages/VerifyOtp";
-
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-
 import Marketplace from "./pages/Marketplace";
 import Messages from "./pages/Messages";
-
-
+import AdminEvents from "./pages/AdminEvents";
+import HostelHub from "./pages/HostelHub";
+import Events from "./pages/Events";
 
 function App() {
   useEffect(() => {
@@ -43,9 +40,7 @@ function App() {
 
   return (
     <BrowserRouter>
-
       <GlobalSocketListener />
-
       <Notifications />
 
       <Routes>
@@ -63,7 +58,7 @@ function App() {
           path="/marketplace"
           element={
             <ProtectedRoute>
-              <Marketplace/>
+              <Marketplace />
             </ProtectedRoute>
           }
         />
@@ -106,8 +101,43 @@ function App() {
 
         <Route
           path="/messages"
-          element={<Messages />}
+          element={
+            <ProtectedRoute>
+              <Messages />
+            </ProtectedRoute>
+          }
         />
+
+        <Route
+          path="/notes"
+          element={
+            <ProtectedRoute>
+              <Notes />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notes/upload"
+          element={
+            <ProtectedRoute>
+              <UploadNote />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ---------- ADMIN EVENTS ---------- */}
+
+        <Route
+          path="/admin/events"
+          element={
+            <ProtectedRoute>
+              <AdminEvents />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ---------- AUTH ---------- */}
 
         <Route
           path="/login"
@@ -135,20 +165,18 @@ function App() {
         />
 
         <Route
-          path="/notes"
+          path="/hostel"
           element={
-          <ProtectedRoute>
-            <Notes />
-          </ProtectedRoute>
+            <ProtectedRoute>
+              <HostelHub />
+            </ProtectedRoute>
           }
         />
 
-        <Route
-          path="/notes/upload"
+        <Route 
+          path="/events"
           element={
-          <ProtectedRoute>
-            <UploadNote />
-          </ProtectedRoute>
+          <Events />
           }
         />
 

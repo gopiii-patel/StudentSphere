@@ -7,6 +7,9 @@ const {
   updatePost,
   deletePost,
   getUserPosts,
+  toggleSavePost,
+  getSavedPosts,
+
 } = require("../controllers/postController");
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -27,5 +30,15 @@ router.route("/:id")
 
 router.put("/like/:id", toggleLikePost);
 router.put("/comment/:id", commentPost);
+
+router.put(
+  "/save/:id",
+  toggleSavePost
+);
+
+router.get(
+  "/saved/all",
+  getSavedPosts
+);
 
 module.exports = router;

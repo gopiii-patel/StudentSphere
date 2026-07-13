@@ -15,28 +15,25 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (
-  req,
-  file,
-  cb
-) => {
+const fileFilter = (req, file, cb) => {
+  console.log("Incoming File:", file);
+
   const allowedTypes = [
     "application/pdf",
     "image/jpeg",
     "image/png",
     "image/webp",
+    "image/jpg",
   ];
 
-  if (
-    allowedTypes.includes(
-      file.mimetype
-    )
-  ) {
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
+    console.log("Rejected:", file.mimetype);
+
     cb(
       new Error(
-        "Only PDF and images allowed"
+        `Invalid file type: ${file.mimetype}`
       ),
       false
     );

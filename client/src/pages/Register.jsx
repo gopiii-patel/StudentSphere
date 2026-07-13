@@ -97,7 +97,7 @@ function Register() {
             <GraduationCap size={40} />
           </motion.div>
           <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
-            Join CampusConnect
+            Join StudentSphere
           </h2>
           <p className="text-sm text-slate-400 mt-2">
             Create an account to connect with peers and trade

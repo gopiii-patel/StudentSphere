@@ -250,6 +250,51 @@ const getUserPosts = async (req, res) => {
   }
 };
 
+const User = require("../models/User");
+
+const toggleSavePost = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    const postId = req.params.id;
+
+    const index = user.savedPosts.indexOf(postId);
+
+    if (index === -1) {
+      user.savedPosts.push(postId);
+    } else {
+      user.savedPosts.splice(index, 1);
+    }
+
+    await user.save();
+
+    res.json(user.savedPosts);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+const getSavedPosts = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .populate({
+        path: "savedPosts",
+        populate: {
+          path: "author",
+          select: "name profilePicture",
+        },
+      });
+
+    res.json(user.savedPosts);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   createPost,
   getPosts,
@@ -258,4 +303,7 @@ module.exports = {
   updatePost,
   deletePost,
   getUserPosts,
+
+  toggleSavePost,
+  getSavedPosts,
 };

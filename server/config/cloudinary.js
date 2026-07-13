@@ -7,41 +7,31 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Upload Buffer (for Notes module etc.)
 const uploadToCloudinary = (
   fileBuffer,
-  resourceType = "auto",
-  originalName = "file"
+  resourceType = "auto"
 ) => {
   return new Promise((resolve, reject) => {
-
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: "campusconnect_notes",
+        folder: "StudentSphere",
         resource_type: resourceType,
-        use_filename: true,
-        unique_filename: true,
-        overwrite: false,
       },
-
       (error, result) => {
+        if (error) return reject(error);
 
-        if (error) {
-          return reject(error);
-        }
-
-        // IMPORTANT
         resolve(result.secure_url);
-
       }
     );
 
     streamifier
       .createReadStream(fileBuffer)
       .pipe(uploadStream);
-
   });
 };
 
-module.exports = {
-  uploadToCloudinary,
-};
+// Export cloudinary itself
+cloudinary.uploadToCloudinary = uploadToCloudinary;
+
+module.exports = cloudinary;

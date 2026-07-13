@@ -35,6 +35,13 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    // User Role
+    role: {
+      type: String,
+      enum: ["student", "admin"],
+      default: "student",
+    },
+
     // Verification
     emailVerified: {
       type: Boolean,
@@ -100,10 +107,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    savedPosts: [
+      { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
+
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports =
+  mongoose.models.User ||
+  mongoose.model("User", userSchema);

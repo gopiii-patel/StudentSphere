@@ -129,7 +129,10 @@ function Home() {
         </div>
 
         {/* CREATE POST */}
-        <motion.div className="rounded-3xl border border-slate-800/80 bg-slate-900/40 p-5">
+        <motion.div
+        id="create-post"
+        className="rounded-3xl border border-slate-800/80 bg-slate-900/40 p-5"
+        >
           <div className="flex items-center gap-3 mb-4">
             {user?.profilePicture ? (
               <img
@@ -148,7 +151,7 @@ function Home() {
               </p>
 
               <p className="text-xs text-slate-500">
-                CampusConnect
+                StudentSphere
               </p>
             </div>
           </div>

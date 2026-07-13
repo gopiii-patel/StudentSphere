@@ -117,7 +117,7 @@ const user = await User.create({
 try {
   await sendEmail(
     email,
-    "CampusConnect Email Verification",
+    "StudentSphere Email Verification",
     `Your OTP is ${otp}`
   );
 } catch (err) {
@@ -152,7 +152,8 @@ try {
         skills: user.skills,
         bio: user.bio,
         profilePicture:
-          user.profilePicture,
+        user.profilePicture,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -214,24 +215,27 @@ const loginUser = async (req, res) => {
         expiresIn: "7d",
       }
     );
+    const isAdmin =
+    user.email === process.env.ADMIN_EMAIL;
 
     res.status(200).json({
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        mobile: user.mobile,
-        college: user.college,
-        branch: user.branch,
-        semester: user.semester,
-        year: user.year,
-        skills: user.skills,
-        bio: user.bio,
-        profilePicture:
-          user.profilePicture,
-      },
-    });
+  token,
+  user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
+      college: user.college,
+      branch: user.branch,
+      semester: user.semester,
+      year: user.year,
+      skills: user.skills,
+      bio: user.bio,
+      profilePicture: user.profilePicture,
+      role: user.role,
+      isAdmin,
+    },
+  });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -253,9 +257,15 @@ const getMe = async (req, res) => {
       });
     }
 
+    const isAdmin =
+        user.email === process.env.ADMIN_EMAIL;
+
     res.status(200).json({
-      user,
-    });
+        user: {
+          ...user.toObject(),
+          isAdmin,
+        },
+      });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -426,10 +436,13 @@ const getUserProfileById =
       }
     );
 
+    const isAdmin =
+    user.email === process.env.ADMIN_EMAIL;
+
     return res.status(200).json({
       message: "Email verified successfully",
       token,
-      user: {
+      uuser: {
         _id: user._id,
         name: user.name,
         email: user.email,
@@ -441,6 +454,8 @@ const getUserProfileById =
         skills: user.skills,
         bio: user.bio,
         profilePicture: user.profilePicture,
+        role: user.role,
+        isAdmin,
       },
     });
   } catch (error) {
@@ -475,7 +490,7 @@ const resendOtp = async (req, res) => {
 
     await sendEmail(
       email,
-      "CampusConnect OTP",
+      "StudentSphere OTP",
       `Your OTP is ${otp}. It expires in 10 minutes.`
     );
 
@@ -523,7 +538,7 @@ const forgotPassword = async (req, res) => {
 
     await sendEmail(
       user.email,
-      "CampusConnect Password Reset",
+      "StudentSphere Password Reset",
       `Your password reset OTP is ${otp}.`
     );
 

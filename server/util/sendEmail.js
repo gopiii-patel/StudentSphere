@@ -15,7 +15,7 @@ const sendEmail = async (
   text
 ) => {
   await transporter.sendMail({
-    from: `"CampusConnect" <${process.env.EMAIL_USER}>`,
+    from: `"StudentSphere" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     text,
