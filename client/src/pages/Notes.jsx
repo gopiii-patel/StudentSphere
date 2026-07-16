@@ -131,7 +131,7 @@ function Notes() {
           );
 
         link.href =
-          `http://localhost:5000${note.fileUrl}`;
+        `${import.meta.env.VITE_API_URL.replace("/api","")}${note.fileUrl}`;
 
         link.download =
           note.title;
@@ -364,7 +364,7 @@ function Notes() {
                     <div className="flex gap-2 mt-5">
 
                       <a
-                        href={`http://localhost:5000${note.fileUrl}`}
+                        href={`${import.meta.env.VITE_API_URL.replace("/api","")}${note.fileUrl}`}
                         target="_blank"
                         rel="noreferrer"
                         className="flex-1 bg-slate-800 text-center py-2 rounded-xl"

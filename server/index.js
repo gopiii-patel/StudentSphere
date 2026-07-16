@@ -30,14 +30,11 @@ const CLIENT_URL =
   process.env.CLIENT_URL ||
   "http://localhost:5173";
 
-// ======================
-// CORS
-// ======================
-
 app.use(
   cors({
     origin: CLIENT_URL,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
