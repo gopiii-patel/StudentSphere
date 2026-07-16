@@ -23,16 +23,29 @@ const app = express();
 const server = http.createServer(app);
 
 // ======================
-// CLIENT URL
+// Allowed Origins
 // ======================
 
-const CLIENT_URL =
-  process.env.CLIENT_URL ||
-  "http://localhost:5173";
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://student-sphere-xi.vercel.app",
+  "https://student-sphere-git-main-gopi4.vercel.app",
+  "https://student-sphere-l8q0gkxa4-gopi4.vercel.app",
+];
+
+// ======================
+// CORS
+// ======================
 
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -46,9 +59,7 @@ app.use(express.json());
 
 app.use(
   "/uploads",
-  express.static(
-    path.join(__dirname, "uploads")
-  )
+  express.static(path.join(__dirname, "uploads"))
 );
 
 // ======================
@@ -57,16 +68,15 @@ app.use(
 
 const io = new Server(server, {
   cors: {
-    origin: CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: allowedOrigins,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
 app.set("io", io);
 
 const onlineUsers = new Map();
-
 app.set("onlineUsers", onlineUsers);
 
 // ======================
@@ -84,98 +94,62 @@ io.on("connection", (socket) => {
       user: userData,
     });
 
-    const users = Array.from(
-      onlineUsers.values()
-    ).map((u) => u.user);
+    const users = Array.from(onlineUsers.values()).map((u) => u.user);
 
     io.emit("users:online", users);
 
   });
 
-  socket.on(
-    "message:seen",
-    ({ senderId, conversationId }) => {
+  socket.on("message:seen", ({ senderId, conversationId }) => {
 
-      const sender =
-        onlineUsers.get(senderId);
+    const sender = onlineUsers.get(senderId);
 
-      if (sender) {
-
-        io.to(sender.socketId).emit(
-          "message:seen",
-          {
-            conversationId,
-          }
-        );
-
-      }
-
+    if (sender) {
+      io.to(sender.socketId).emit("message:seen", {
+        conversationId,
+      });
     }
-  );
 
-  socket.on(
-    "typing:start",
-    ({ receiverId, senderName }) => {
+  });
 
-      const receiver =
-        onlineUsers.get(receiverId);
+  socket.on("typing:start", ({ receiverId, senderName }) => {
 
-      if (receiver) {
+    const receiver = onlineUsers.get(receiverId);
 
-        io.to(receiver.socketId).emit(
-          "typing:start",
-          {
-            senderName,
-          }
-        );
-
-      }
-
+    if (receiver) {
+      io.to(receiver.socketId).emit("typing:start", {
+        senderName,
+      });
     }
-  );
 
-  socket.on(
-    "typing:stop",
-    ({ receiverId }) => {
+  });
 
-      const receiver =
-        onlineUsers.get(receiverId);
+  socket.on("typing:stop", ({ receiverId }) => {
 
-      if (receiver) {
+    const receiver = onlineUsers.get(receiverId);
 
-        io.to(receiver.socketId).emit(
-          "typing:stop"
-        );
-
-      }
-
+    if (receiver) {
+      io.to(receiver.socketId).emit("typing:stop");
     }
-  );
+
+  });
 
   socket.on("disconnect", () => {
 
     for (const [userId, value] of onlineUsers.entries()) {
 
       if (value.socketId === socket.id) {
-
         onlineUsers.delete(userId);
-
         break;
-
       }
 
     }
 
-    const users = Array.from(
-      onlineUsers.values()
-    ).map((u) => u.user);
+    const users = Array.from(onlineUsers.values()).map((u) => u.user);
 
     io.emit("users:online", users);
 
-    console.log(
-      "User disconnected:",
-      socket.id
-    );
+    console.log("User disconnected:", socket.id);
 
   });
 
@@ -186,19 +160,12 @@ io.on("connection", (socket) => {
 // ======================
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/posts", postRoutes);
-
 app.use("/api/products", productRoutes);
-
 app.use("/api/chat", chatRoutes);
-
 app.use("/api/messages", messageRoutes);
-
 app.use("/api/notes", noteRoutes);
-
 app.use("/api/events", eventRoutes);
-
 app.use("/api/hostel", hostelRoutes);
 
 // ======================
@@ -206,25 +173,18 @@ app.use("/api/hostel", hostelRoutes);
 // ======================
 
 app.get("/", (req, res) => {
-
   res.json({
     success: true,
     message: "StudentSphere Backend Running 🚀",
   });
-
 });
 
 // ======================
 // Server
 // ======================
 
-const PORT =
-  process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
-
-  console.log(
-    `🚀 Server running on port ${PORT}`
-  );
-
+  console.log(`🚀 Server running on port ${PORT}`);
 });
